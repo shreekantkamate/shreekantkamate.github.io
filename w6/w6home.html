@@ -101,7 +101,7 @@ def destroy(request, id):
     return redirect("/show")
 
 #edit.html
-    <form method="POST" class="post-form" action="/update/{{employee.id}}">
+<pre>  <form method="POST" class="post-form" action="/update/{{employee.id}}">
         {% csrf_token %}
         <h3>Update Details</h3>
         <label>Employee Id:</label>
@@ -114,7 +114,7 @@ def destroy(request, id):
         <input type="text" name="econtact" id="id_econtact" value="{{ employee.econtact }}" />
         <button type="submit">Update</button>
     </form>
-
+</pre>
 #show.html
 <body>
     <table>
