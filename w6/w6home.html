@@ -19,14 +19,6 @@
 <body>
         <h2 style="text-align: right"><a href="/index.html" style="color:orangered">Main Page</a></h2>
 
-    <table>
-
-        <ul>
-            <p>सदरची वेबसाईटचे काम चालू आहे. लवकरच हि वेबसाईट आपल्यासमोर उपस्थित करीत आहोत. धन्यवाद</p>
-            <p>This website is in work in progress, Coming soon.. we will present this website. Thank You.</p>
-
-
-
 <textarea>
 #settings.py
 DATABASES = {
@@ -102,7 +94,6 @@ def destroy(request, id):
     employee.delete()  
     return redirect("/show")
 
-<textarea>
 #edit.html
  <form method="POST" class="post-form" action="/update/{{employee.id}}">
         {% csrf_token %}
@@ -161,10 +152,5 @@ def destroy(request, id):
 </textarea>
 
 
-        </ul>
-      
-    </table>
-
 </body>
-
 </html>
