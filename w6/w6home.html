@@ -25,6 +25,135 @@
             <p>सदरची वेबसाईटचे काम चालू आहे. लवकरच हि वेबसाईट आपल्यासमोर उपस्थित करीत आहोत. धन्यवाद</p>
             <p>This website is in work in progress, Coming soon.. we will present this website. Thank You.</p>
 
+<p>#settings.py
+DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
+     'default': {  
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': 'djangodb',  
+        'USER':'root',  
+        'PASSWORD':'root',  
+        'HOST':'localhost',  
+        'PORT':'3306'  
+    }  
+}
+
+#urls.py
+from django.contrib import admin  
+from django.urls import path  
+from employee import views  
+urlpatterns = [  
+    path('admin/', admin.site.urls),  
+    path('emp', views.emp),  
+    path('show',views.show),  
+    path('edit/<int:id>', views.edit),  
+    path('update/<int:id>', views.update),  
+    path('delete/<int:id>', views.destroy),  
+]  
+
+#models.py
+from django.db import models  
+class Employee(models.Model):  
+    eid = models.CharField(max_length=20)  
+    ename = models.CharField(max_length=100)  
+    eemail = models.EmailField()  
+    econtact = models.CharField(max_length=15)  
+    class Meta:  
+        db_table = "employee"  
+
+#views.py
+from django.shortcuts import render, redirect  
+from employee.forms import EmployeeForm  
+from employee.models import Employee  
+# Create your views here.  
+def emp(request):  
+    if request.method == "POST":  
+        form = EmployeeForm(request.POST)  
+        if form.is_valid():  
+            try:  
+                form.save()  
+                return redirect('/show')  
+            except:  
+                pass  
+    else:  
+        form = EmployeeForm()  
+    return render(request,'index.html',{'form':form})  
+def show(request):  
+    employees = Employee.objects.all()  
+    return render(request,"show.html",{'employees':employees})  
+def edit(request, id):  
+    employee = Employee.objects.get(id=id)  
+    return render(request,'edit.html', {'employee':employee})  
+def update(request, id):  
+    employee = Employee.objects.get(id=id)  
+    form = EmployeeForm(request.POST, instance = employee)  
+    if form.is_valid():  
+        form.save()  
+        return redirect("/show")  
+    return render(request, 'edit.html', {'employee': employee})  
+def destroy(request, id):  
+    employee = Employee.objects.get(id=id)  
+    employee.delete()  
+    return redirect("/show")
+
+#edit.html
+    <form method="POST" class="post-form" action="/update/{{employee.id}}">
+        {% csrf_token %}
+        <h3>Update Details</h3>
+        <label>Employee Id:</label>
+        <input type="text" name="eid" id="id_eid" value="{{ employee.eid }}" />
+        <label>Employee Name:</label>
+        <input type="text" name="ename" id="id_ename" value="{{ employee.ename }}" />
+        <label>Employee Email:</label>
+        <input type="email" name="eemail" id="id_eemail" value="{{ employee.eemail }}" />
+        <label>Employee Contact:</label>
+        <input type="text" name="econtact" id="id_econtact" value="{{ employee.econtact }}" />
+        <button type="submit">Update</button>
+    </form>
+
+#show.html
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Employee Email</th>
+                <th>Employee Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.eid }}</td>
+                <td>{{ employee.ename }}</td>
+                <td>{{ employee.eemail }}</td>
+                <td>{{ employee.econtact }}</td>
+                <td>
+                    <a href="/edit/{{ employee.id }}">Edit</a>
+                    <a href="/delete/{{ employee.id }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="/emp">Add New Record</a>
+
+#index.html
+    <form method="POST" class="post-form" action="/emp">
+        {% csrf_token %}
+        <h3>Enter Details</h3>
+        <label>Employee Id:</label> {{ form.eid }}
+        <label>Employee Name:</label> {{ form.ename }}
+        <label>Employee Email:</label> {{ form.eemail }}
+        <label>Employee Contact:</label> {{ form.econtact }}
+        <button type="submit">Submit</button>
+    </form></p>
         </ul>
        
     </table>
