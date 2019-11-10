@@ -59,6 +59,14 @@ class Employee(models.Model):
     class Meta:  
         db_table = "employee"  
 
+#forms.py
+from django import forms  
+from employee.models import Employee  
+class EmployeeForm(forms.ModelForm):  
+    class Meta:  
+        model = Employee  
+        fields = "__all__"  
+
 #views.py
 from django.shortcuts import render, redirect  
 from employee.forms import EmployeeForm  
